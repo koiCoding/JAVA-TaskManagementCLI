@@ -16,7 +16,7 @@
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/task-cli.git
+   git clone https://github.com/koiCoding/JAVA-TaskManagementCLI.git
    ```
 2. Navigate to local repository:
    ```bash
