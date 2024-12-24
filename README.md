@@ -33,7 +33,7 @@
 
 To add a new task, use the following command:
 ```bash
-add "Buy groceries"
+add "Task"
 ```
 **Output:**
 ```
@@ -44,26 +44,26 @@ Task added successfully (ID: 1)
 
 To update an existing task, use the `update` command:
 ```bash
-update 1 "Buy groceries and cook dinner"
+update task_id "Updated Task"
 ```
 
 ### Deleting a Task
 
 To delete a task, use the `delete` command:
 ```bash
-delete 1
+delete task_id
 ```
 
 ### Marking a Task
 
 - To mark a task as "In Progress":
   ```bash
-  mark-in-progress 1
+  mark-in-progress task_id
   ```
 
 - To mark a task as "Done":
   ```bash
-  mark-done 1
+  mark-done task_id
   ```
 
 ### Listing Tasks
