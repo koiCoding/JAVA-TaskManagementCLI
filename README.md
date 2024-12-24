@@ -29,7 +29,7 @@
 
 ## Usage
 
-### Adding a New Task
+### 1.Adding a New Task
 
 To add a new task, use the following command:
 ```bash
@@ -40,21 +40,21 @@ add "Task"
 Task added successfully (ID: 1)
 ```
 
-### Updating a Task
+### 2.Updating a Task
 
 To update an existing task, use the `update` command:
 ```bash
 update task_id "Updated Task"
 ```
 
-### Deleting a Task
+### 3.Deleting a Task
 
 To delete a task, use the `delete` command:
 ```bash
 delete task_id
 ```
 
-### Marking a Task
+### 4.Marking a Task
 
 - To mark a task as "In Progress":
   ```bash
@@ -66,7 +66,7 @@ delete task_id
   mark-done task_id
   ```
 
-### Listing Tasks
+### 5.Listing Tasks
 
 - To list all tasks:
   ```bash
