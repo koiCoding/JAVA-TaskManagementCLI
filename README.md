@@ -24,7 +24,7 @@
    ```
 3. Run the following command in the terminal:
   ```bash
-  java -cp "lib/json.jar;." TaskCLI command arguments
+  java -cp "lib/json.jar;." TaskCLI command argument
   ```
 
 ## Usage
