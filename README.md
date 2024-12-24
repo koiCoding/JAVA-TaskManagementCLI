@@ -1,4 +1,4 @@
-# JAVA-Project1-TaskManagementCLI
+# JAVA-TaskManagementCLI
 
 # Task CLI
 
