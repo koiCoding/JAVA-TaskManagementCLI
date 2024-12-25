@@ -24,7 +24,7 @@
    ```
 3. Run the following command in the terminal:
    ```bash
-   java -cp "lib/json.jar;." TaskCLI command argument
+   java TaskCLI command argument
    ```
 
 ## Usage
@@ -76,7 +76,7 @@ delete task_id
 - To list tasks by status:
   ```bash
   list done
-  list todo
+  list to-do
   list in-progress
   ```
 
