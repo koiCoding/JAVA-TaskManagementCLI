@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class TaskCLI {
     private static final String FILE_NAME = "tasks.json";
+    private static final int LINE_DELIMITER_LENGTH = 20;
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -111,16 +112,16 @@ public class TaskCLI {
     }
 
     private static void listTasks(String filter) {
+        String delimiter = "-".repeat(LINE_DELIMITER_LENGTH);
         ArrayList<Task> tasks = getTasks();
+        System.out.println("List of Task:");
+        System.out.println(delimiter);
         for(Task task : tasks){
-            String statusCurrentItem = task.getStatus();
-            if (filter.equals("all") ||
-                (filter.equals("done") && statusCurrentItem.equals("done")) ||
-                (filter.equals("to-do") && statusCurrentItem.equals("to-do")) ||
-                (filter.equals("in-progress") && statusCurrentItem.equals("in-progress"))) {
-                System.out.println("ID: " + task.getId() + ", Description: " + task.getDescription() + ", Status: " + statusCurrentItem);
+            if (filter.equals("all") || filter.equals(task.getStatus())) {
+                System.out.println(task.toJSONString());
             }
         }
+        System.out.println(delimiter);
     }
 
     private static ArrayList<Task> getTasks() {
@@ -131,7 +132,8 @@ public class TaskCLI {
                 return taskList;
             }
             String content = new String(Files.readAllBytes(Paths.get(FILE_NAME)));
-            String[] tasksString = content.split("\n"); 
+            content = content.substring(1,content.length() - 1);
+            String[] tasksString = content.split("(?<=\\}),\\s*(?=\\{)");
             // task is JSON String here, we want to change it to put it into our taskList
             for(String task : tasksString){
                 Task currentTask = Task.fromJSONString(task);

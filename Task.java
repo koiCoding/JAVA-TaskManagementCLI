@@ -34,7 +34,7 @@ class Task {
     }
 
     public static Task fromJSONString(String taskJSON){
-        taskJSON = taskJSON.replaceAll("[{} \"]", "");
+        taskJSON = taskJSON.replaceAll("[{}\"]", "");
         String[] fields = taskJSON.split(",");
         int id = Integer.parseInt(fields[0].split(":")[1]);
         String description = fields[1].split(":")[1];
