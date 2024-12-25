@@ -1,11 +1,9 @@
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class TaskCLI {
     private static final String FILE_NAME = "tasks.json";
@@ -67,24 +65,20 @@ public class TaskCLI {
     }
 
     private static void addTask(String description) {
-        JSONArray tasks = getTasks();
-        JSONObject newTask = new JSONObject();
-        newTask.put("id", tasks.length() + 1);
-        newTask.put("description", description);
-        newTask.put("status", "todo");
-        tasks.put(newTask);
+        ArrayList<Task> tasks = getTasks();
+        Task newTask = new Task(tasks.size() + 1, description, "to-do");
+        tasks.add(newTask);
         saveTasks(tasks);
-        System.out.println("Task added successfully (ID: " + (tasks.length()) + ")");
+        System.out.println("Task added successfully (ID: " + (tasks.size()) + ")");
     }
 
     private static void updateTask(int id, String newDescription) {
-        JSONArray tasks = getTasks();
-        for (int i = 0; i < tasks.length(); i++) {
-            JSONObject task = tasks.getJSONObject(i);
-            if (task.getInt("id") == id) {
-                task.put("description", newDescription);
+        ArrayList<Task> tasks = getTasks();
+        for(Task task : tasks){
+            if(task.getId() == id){
+                task.updateTask(newDescription);
                 saveTasks(tasks);
-                System.out.println("Task updated successfully.");
+                System.out.println("Task description updated successfully.");
                 return;
             }
         }
@@ -92,12 +86,12 @@ public class TaskCLI {
     }
 
     private static void deleteTask(int id) {
-        JSONArray tasks = getTasks();
-        for (int i = 0; i < tasks.length(); i++) {
-            if (tasks.getJSONObject(i).getInt("id") == id) {
-                tasks.remove(i);
+        ArrayList<Task> tasks = getTasks();
+        for(Task task : tasks){
+            if(task.getId() == id){
+                tasks.remove(task);
                 saveTasks(tasks);
-                System.out.println("Task deleted successfully.");
+                System.out.println("Task deleted sucessfully.");
                 return;
             }
         }
@@ -105,13 +99,11 @@ public class TaskCLI {
     }
 
     private static void markTask(int id, String status) {
-        JSONArray tasks = getTasks();
-        for (int i = 0; i < tasks.length(); i++) {
-            JSONObject task = tasks.getJSONObject(i);
-            if (task.getInt("id") == id) {
-                task.put("status", status);
+        ArrayList<Task> tasks = getTasks();
+        for(Task task : tasks){
+            if(task.getId() == id){
+                task.updateStatus(status);
                 saveTasks(tasks);
-                System.out.println("Task marked as " + status + ".");
                 return;
             }
         }
@@ -119,37 +111,48 @@ public class TaskCLI {
     }
 
     private static void listTasks(String filter) {
-        JSONArray tasks = getTasks();
-        for (int i = 0; i < tasks.length(); i++) {
-            JSONObject task = tasks.getJSONObject(i);
-            String status = task.getString("status");
-
+        ArrayList<Task> tasks = getTasks();
+        for(Task task : tasks){
+            String statusCurrentItem = task.getStatus();
             if (filter.equals("all") ||
-                (filter.equals("done") && status.equals("done")) ||
-                (filter.equals("todo") && status.equals("todo")) ||
-                (filter.equals("in-progress") && status.equals("in-progress"))) {
-                System.out.println("ID: " + task.getInt("id") + ", Description: " + task.getString("description") + ", Status: " + status);
+                (filter.equals("done") && statusCurrentItem.equals("done")) ||
+                (filter.equals("to-do") && statusCurrentItem.equals("to-do")) ||
+                (filter.equals("in-progress") && statusCurrentItem.equals("in-progress"))) {
+                System.out.println("ID: " + task.getId() + ", Description: " + task.getDescription() + ", Status: " + statusCurrentItem);
             }
         }
     }
 
-    private static JSONArray getTasks() {
+    private static ArrayList<Task> getTasks() {
+        ArrayList<Task> taskList = new ArrayList<>();
         try {
             File file = new File(FILE_NAME);
             if (!file.exists()) {
-                return new JSONArray();
+                return taskList;
             }
             String content = new String(Files.readAllBytes(Paths.get(FILE_NAME)));
-            return new JSONArray(content);
+            String[] tasksString = content.split("\n"); 
+            // task is JSON String here, we want to change it to put it into our taskList
+            for(String task : tasksString){
+                Task currentTask = Task.fromJSONString(task);
+                taskList.add(currentTask);
+            }
         } catch (IOException e) {
             System.out.println("Error reading tasks file.");
-            return new JSONArray();
         }
+
+        return taskList;
     }
 
-    private static void saveTasks(JSONArray tasks) {
+    private static void saveTasks(ArrayList<Task> taskList) {
         try (FileWriter file = new FileWriter(FILE_NAME)) {
-            file.write(tasks.toString());
+            file.write("[");
+            for(int i = 0; i < taskList.size() - 1; i++){
+                Task task = taskList.get(i);
+                file.write(task.toJSONString() + ",");
+            }
+            file.write(taskList.get(taskList.size() - 1).toJSONString());
+            file.write("]");
             file.flush();
         } catch (IOException e) {
             System.out.println("Error saving tasks.");
